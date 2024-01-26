@@ -33,6 +33,7 @@ public class Board extends JPanel  {
     private Player player;
     private Shot shot;
     private int score = 0;
+    private int initialscore;
     private JButton playAgainButton;
 
     private int direction = -1;
@@ -59,7 +60,7 @@ public class Board extends JPanel  {
     
  
 private void initUI() {
-        playAgainButton = new JButton("Play Again");
+        playAgainButton = new JButton("Continue");
         playAgainButton.addActionListener(new PlayAgainListener());
         playAgainButton.setFocusable(false);
         add(playAgainButton);
@@ -107,8 +108,8 @@ private void resetGame() {
         for (int i = 0; i < 1*lvl; i++) {
             for (int j = 0; j < 1*lvl; j++) {
 
-                var alien = new Alien(Commons.ALIEN_INIT_X + 70 * j,
-                        Commons.ALIEN_INIT_Y + 60 * i);
+                var alien = new Alien(Commons.ALIEN_INIT_X + 90 * j,
+                        Commons.ALIEN_INIT_Y + 70 * i);
                 aliens.add(alien);
             }
         }
@@ -156,7 +157,7 @@ private void resetGame() {
         }
     }
 
-    private void drawBombing(Graphics g) {
+     private void drawBombing(Graphics g) {
 
         for (Alien a : aliens) {
 
@@ -168,6 +169,7 @@ private void resetGame() {
             }
         }
     }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -190,12 +192,7 @@ private void resetGame() {
                 Commons.BOARD_WIDTH / 2 - 688);
         g.drawString("Score: " + score, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2 -400,
                 Commons.BOARD_WIDTH / 2 - 688);
-        g.drawString("CHANCE: " + Commons.CHANCE, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2 -200,
-                Commons.BOARD_WIDTH / 2 - 688);
         
-        
-        
-
             g.drawLine(0, Commons.GROUND,
                     Commons.BOARD_WIDTH, Commons.GROUND);
 
@@ -285,10 +282,59 @@ private class PlayAgainListener implements ActionListener {
                     }
                 }
             }
-
+            
             int y = shot.getY();
             y -= 4;
-
+            if(score>=10){
+            y -= 2;
+            }
+             if(score>=40){
+            y -= 2;
+            }
+             
+              if(score>=60){
+            y -= 2;
+            }
+              
+               if(score>=70){
+            y -= 2;
+            }
+               
+                if(score>=90){
+            y -= 2;
+            }
+                
+                if(score>=120){
+            y -= 5;
+            }
+            if(score>=200){
+            y -= 10;
+            }
+            /*
+            else if(score>20){
+            y -= 12;
+            }else if(score>30){
+            y -= 14;
+            }else if(score>40){
+            y -= 16;
+            }else if(score>50){
+            y -= 18;
+            }else if(score>60){
+            y -= 20;
+            }else if(score>70){
+            y -= 22;
+            }else if(score>20){
+            y -= 24;
+            }else if(score>80){
+            y -= 28;
+            }else if(score>90){
+            y -= 30;
+            }else if(score>100){
+            y -= 50;
+            }else if(score>120){
+            y -= 70;
+            }*/
+            
             if (y < 0) {
                 shot.die();
             } else {
@@ -385,7 +431,7 @@ private class PlayAgainListener implements ActionListener {
 
             if (!bomb.isDestroyed()) {
 
-                bomb.setY(bomb.getY() + 1);
+                bomb.setY(bomb.getY() + 5);
 
                 if (bomb.getY() >= Commons.GROUND - Commons.BOMB_HEIGHT) {
 
