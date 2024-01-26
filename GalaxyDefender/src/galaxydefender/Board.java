@@ -7,6 +7,7 @@ import galaxydefender.sprite.Player;
 import galaxydefender.sprite.Shot;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Color;
@@ -23,18 +24,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import javax.swing.JOptionPane;
 
-public class Board extends JPanel {
+
+public class Board extends JPanel  {
 
     private Dimension d;
     private List<Alien> aliens;
     private Player player;
     private Shot shot;
     private int score = 0;
+    private JButton playAgainButton;
 
     private int direction = -1;
     private int deaths = 0;
+    private int lvl = 1;
+    public int needToDestroy = Commons.NUMBER_OF_ALIENS_TO_DESTROY;
+   
+    
 
     private boolean inGame = true;
     private String explImg = "src/images/explosion.png";
@@ -46,10 +52,41 @@ public class Board extends JPanel {
 
     public Board() {
 
-        initBoard();
+       initBoard();
         gameInit();
+        initUI();
     }
+    
+ 
+private void initUI() {
+        playAgainButton = new JButton("Play Again");
+        playAgainButton.addActionListener(new PlayAgainListener());
+        playAgainButton.setFocusable(false);
+        add(playAgainButton);
+        playAgainButton.setVisible(false);
+    }
+private void resetGame() {
+        deaths = 0;
+        score = 0;
+        inGame = true;
+        message = "Game Over";
+        player = new Player();
+        aliens.clear();
+        gameInit();
+        
 
+     
+        if (!timer.isRunning()) {
+            timer.start();
+        }
+
+       
+        playAgainButton.setVisible(false);
+
+       
+        repaint();
+        
+    }
     private void initBoard() {
         addKeyListener(new TAdapter());
         setFocusable(true);
@@ -67,11 +104,11 @@ public class Board extends JPanel {
 
         aliens = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 1*lvl; i++) {
+            for (int j = 0; j < 1*lvl; j++) {
 
-                var alien = new Alien(Commons.ALIEN_INIT_X + 35 * j,
-                        Commons.ALIEN_INIT_Y + 35 * i);
+                var alien = new Alien(Commons.ALIEN_INIT_X + 70 * j,
+                        Commons.ALIEN_INIT_Y + 60 * i);
                 aliens.add(alien);
             }
         }
@@ -141,10 +178,23 @@ public class Board extends JPanel {
 
     private void doDrawing(Graphics g) {
 
-         g.drawImage(backgroundImg, 0, 0, this);
+        g.drawImage(backgroundImg, 0, 0, this);
         g.setColor(Color.green);
 
         if (inGame) {
+        var small = new Font("Comic Sans MS", Font.BOLD, 35);
+        var fontMetrics = this.getFontMetrics(small);
+        g.setFont(small);
+        
+        g.drawString("Level: "+lvl, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2 -600,
+                Commons.BOARD_WIDTH / 2 - 688);
+        g.drawString("Score: " + score, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2 -400,
+                Commons.BOARD_WIDTH / 2 - 688);
+        g.drawString("CHANCE: " + Commons.CHANCE, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2 -200,
+                Commons.BOARD_WIDTH / 2 - 688);
+        
+        
+        
 
             g.drawLine(0, Commons.GROUND,
                     Commons.BOARD_WIDTH, Commons.GROUND);
@@ -172,35 +222,44 @@ public class Board extends JPanel {
         g.fillRect(0, 0, Commons.BOARD_WIDTH, Commons.BOARD_HEIGHT);
 
         g.setColor(new Color(0, 32, 48));
-        g.fillRect(50, Commons.BOARD_WIDTH / 2 - 30, Commons.BOARD_WIDTH - 100, 50);
+        g.fillRect(50, Commons.BOARD_WIDTH / 2 - 600, Commons.BOARD_WIDTH - 100, 500);
         g.setColor(Color.white);
-        g.drawRect(50, Commons.BOARD_WIDTH / 2 - 30, Commons.BOARD_WIDTH - 100, 50);
+        g.drawRect(50, Commons.BOARD_WIDTH / 2 - 600, Commons.BOARD_WIDTH - 100, 500);
 
-        var small = new Font("Helvetica", Font.BOLD, 14);
+        var small = new Font("Comic Sans MS", Font.BOLD, 65);
         var fontMetrics = this.getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString(message, (Commons.BOARD_WIDTH - fontMetrics.stringWidth(message)) / 2,
-                Commons.BOARD_WIDTH / 2);
+                Commons.BOARD_WIDTH / 2 - 400);
         g.drawString("Score: " + score, (Commons.BOARD_WIDTH - fontMetrics.stringWidth("Score: " + score)) / 2,
-        Commons.BOARD_WIDTH / 2 + 40);
+        Commons.BOARD_WIDTH / 2 - 320);
+        playAgainButton.setVisible(true);
     }
+private class PlayAgainListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            resetGame();
+        }
+    }
+    private int update() {
 
-    private void update() {
-
-        if (deaths == Commons.NUMBER_OF_ALIENS_TO_DESTROY) {
-
+        if (deaths == Commons.NUMBER_OF_ALIENS_TO_DESTROY*lvl*lvl) {
             inGame = false;
             timer.stop();
-            message = "Game won!";
+            message = "LEVEL COMPLETE!";
+            lvl++;
+            
+          
+            
             
         }
 
-        // player
+   
         player.act();
 
-        // shot
+    
         if (shot.isVisible()) {
 
             int shotX = shot.getX();
@@ -237,7 +296,7 @@ public class Board extends JPanel {
             }
         }
 
-        // aliens
+  
 
         for (Alien alien : aliens) {
 
@@ -252,7 +311,7 @@ public class Board extends JPanel {
                 while (i1.hasNext()) {
 
                     Alien a2 = i1.next();
-                    a2.setY(a2.getY() + Commons.GO_DOWN);
+                    a2.setY(a2.getY() + Commons.GO_DOWN*lvl);
                 }
             }
 
@@ -265,7 +324,7 @@ public class Board extends JPanel {
                 while (i2.hasNext()) {
 
                     Alien a = i2.next();
-                    a.setY(a.getY() + Commons.GO_DOWN);
+                    a.setY(a.getY() + Commons.GO_DOWN*lvl);
                 }
             }
         }
@@ -289,7 +348,7 @@ public class Board extends JPanel {
             }
         }
 
-        // bombs
+       
         var generator = new Random();
 
         for (Alien alien : aliens) {
@@ -320,6 +379,7 @@ public class Board extends JPanel {
                     player.setImage(ii.getImage());
                     player.setDying(true);
                     bomb.setDestroyed(true);
+                    
                 }
             }
 
@@ -333,6 +393,8 @@ public class Board extends JPanel {
                 }
             }
         }
+      
+        return lvl;
     }
 
     private void doGameCycle() {
@@ -380,4 +442,5 @@ public class Board extends JPanel {
             }
         }
     }
+    
 }

@@ -8,9 +8,7 @@ import javax.swing.JFrame;
 
 public class GalaxyDefender extends JFrame {
 
-    //JButton strtbtn, hghscrbtn, quitbtn;
-    //JFrame frame = new JFrame();
-    
+  
     public GalaxyDefender() {
     /*
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

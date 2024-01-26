@@ -27,7 +27,7 @@ public class Player extends Sprite {
         int START_X = 225;
         setX(START_X);
 
-        int START_Y = 400;
+        int START_Y = 700;
         setY(START_Y);
     }
 
@@ -35,9 +35,9 @@ public class Player extends Sprite {
 
         x += dx;
 
-        if (x <= 2) {
+        if (x <= 5) {
 
-            x = 2;
+            x = 5;
         }
 
         if (x >= Commons.BOARD_WIDTH - 2 * width) {
@@ -52,12 +52,12 @@ public class Player extends Sprite {
 
         if (key == KeyEvent.VK_LEFT) {
 
-            dx = -2;
+            dx = -10;
         }
 
         if (key == KeyEvent.VK_RIGHT) {
 
-            dx = 2;
+            dx = 10;
         }
     }
 
