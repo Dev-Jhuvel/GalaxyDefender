@@ -18,16 +18,16 @@ public class Player extends Sprite {
 
     private void initPlayer() {
 
-        var playerImg = "src/images/player.png";
+        var playerImg = "src/images/player.gif";
         var ii = new ImageIcon(playerImg);
 
         width = ii.getImage().getWidth(null);
         setImage(ii.getImage());
 
-        int START_X = 225;
+        int START_X = 675;
         setX(START_X);
 
-        int START_Y = 700;
+        int START_Y = 670;
         setY(START_Y);
     }
 
